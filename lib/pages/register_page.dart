@@ -331,13 +331,20 @@ class _RegisterPageState extends State<RegisterPage> {
 
   isFormValid() async {
     final isValid = _formKey.currentState?.validate() ?? false;
+
+    String cpf = removeSpecialCharacters(cpfController.text);
     if (isValid) {
       getIt<RegisterController>().register(
         nameController.text,
-        cpfController.text,
+        cpf,
         emailController.text,
         passwordController.text,
       );
     }
   }
+
+  String removeSpecialCharacters(String cpf) {
+  return cpf.replaceAll(RegExp(r'[^0-9]'), '');
+}
+
 }
