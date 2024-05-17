@@ -1,6 +1,6 @@
-import 'package:expansion_tile_group/expansion_tile_group.dart';
 import 'package:flutter/material.dart';
 import 'package:lavvi_app/components/elevated_button_component.dart';
+import 'package:lavvi_app/widgets/menu_widget.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -99,9 +99,10 @@ class _HomePageState extends State<HomePage> {
                       const Text(
                         'seuemail@gmail.com',
                         style: TextStyle(
-                            fontSize: 14,
-                            color: Colors.white,
-                            letterSpacing: 3),
+                          fontSize: 14,
+                          color: Colors.white,
+                          letterSpacing: 3,
+                        ),
                       ),
                       Container(
                         width: 280,
@@ -167,7 +168,17 @@ class _HomePageState extends State<HomePage> {
                 return const ListTile(
                   title: Row(
                     children: [
-                      Text('NOVO BOLETO DISPONÍVEL'),
+                      Expanded(
+                        child: SizedBox(
+                          width: 150,
+                          child: Text(
+                            'NOVO BOLETO DISPONÍVEL',
+                            style: TextStyle(
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                        ),
+                      ),
                       SizedBox(width: 16),
                       Text(
                         'R\$2,030.80',
@@ -190,72 +201,30 @@ class _HomePageState extends State<HomePage> {
           ],
         ),
       ),
-      endDrawer: Drawer(
-        shape: InputBorder.none,
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: const [
-            ExpansionTileGroup(
-              children: [
-                ExpansionTileItem(
-                  
-                  tilePadding: EdgeInsets.only(left: 36, right: 16),
-                  border: Border(
-                    bottom: BorderSide(
-                      width: 0.1,
-                      style: BorderStyle.solid,
-                      color: Colors.black,
-                    ),
-                  ),
-                  title: Text(
-                    'MEU PERFIL',
-                    style: TextStyle(
-                      fontWeight: FontWeight.w400,
-                      color: Color.fromRGBO(95, 95, 95, 1),
-                    ),
-                  ),
-                  children: [Text('NADAA')],
-                ),
-                ExpansionTileItem(
-                  tilePadding: EdgeInsets.only(left: 36, right: 16),
-                  border: Border(
-                    bottom: BorderSide(
-                      width: 0.1,
-                      style: BorderStyle.solid,
-                      color: Colors.black,
-                    ),
-                  ),
-                  title: Text(
-                    'MEUS IMÓVEIS',
-                    style: TextStyle(
-                      fontWeight: FontWeight.w400,
-                      color: Color.fromRGBO(95, 95, 95, 1),
-                    ),
-                  ),
-                  children: [Text('NADAA')],
-                ),
-                ExpansionTileItem(
-                  tilePadding: EdgeInsets.only(left: 36, right: 16),
-                  border: Border(
-                    bottom: BorderSide(
-                      width: 0.1,
-                      style: BorderStyle.solid,
-                      color: Colors.black,
-                    ),
-                  ),
-                  title: Text(
-                    'FINANCEIRO',
-                    style: TextStyle(
-                      fontWeight: FontWeight.w400,
-                      color: Color.fromRGBO(95, 95, 95, 1),
-                    ),
-                  ),
-                  children: [Text('NADAA')],
-                ),
-              ],
-            ),
-          ],
-        ),
+      endDrawer: const MenuWidget(),
+    );
+  }
+}
+
+class CircleIcon extends StatelessWidget {
+  final String iconAsset;
+  const CircleIcon({super.key, required this.iconAsset});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 25,
+      width: 25,
+      alignment: Alignment.center,
+      decoration: BoxDecoration(
+          border: Border.all(
+            color: const Color.fromRGBO(120, 120, 120, 1),
+          ),
+          shape: BoxShape.circle),
+      child: Image.asset(
+        iconAsset,
+        height: 18,
+        width: 18,
       ),
     );
   }
