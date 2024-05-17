@@ -37,13 +37,14 @@ dependencies:
   cupertino_icons: ^1.0.6
   google_fonts: ^6.2.1
   expansion_tile_group: ^1.2.4
-  dio: ^5.4.3+1
   flutter_dotenv: ^5.1.0
   shared_preferences: ^2.2.3
   flutter_triple: ^3.0.0
   validatorless: ^1.2.3
   get_it: ^7.7.0
   get:
+  http: ^1.2.1
+  flutter_masked_text2: ^0.9.1
 
 dev_dependencies:
   flutter_test:

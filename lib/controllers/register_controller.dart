@@ -13,8 +13,7 @@ class RegisterController extends Store<RegisterState> {
       String name, String cpf, String email, String password) async {
     setLoading(true);
     try {
-      final result =
-          await getIt<LoginRepository>().register(name, cpf, email, password);
+      final result = await getIt<LoginRepository>().register(name, cpf, email, password);
       update(RegisterSuccess(result));
       Future.delayed(
         const Duration(seconds: 1),

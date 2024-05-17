@@ -23,6 +23,7 @@ class _LoginPageState extends State<LoginPage> {
   final controller = getIt<LoginController>();
 
   String textbuttonError = 'Não autorizado';
+  bool isObscureText = true;
 
   @override
   void dispose() {
@@ -129,14 +130,26 @@ class _LoginPageState extends State<LoginPage> {
                     const SizedBox(height: 16),
                     TextFormField(
                       controller: passwordController,
-                      decoration: const InputDecoration(
-                        label: Align(
+                      decoration: InputDecoration(
+                        label: const Align(
                           alignment: Alignment.center,
                           child: Text(
                             'Senha',
                           ),
                         ),
+                         suffixIcon: IconButton(
+                          onPressed: () {
+                            setState(() {
+                              isObscureText = !isObscureText;
+                            });
+                          },
+                          icon: Icon(
+                           isObscureText ? Icons.visibility_off : Icons.visibility,
+                            size: 19,
+                          ),
+                        ),
                       ),
+                      obscureText: isObscureText,
                       textAlign: TextAlign.center,
                       validator: Validatorless.multiple([
                         Validatorless.min(4, 'O mínimo de caracteres é 4'),

@@ -7,6 +7,7 @@ import 'package:lavvi_app/app_injection/app_injection.dart';
 import 'package:lavvi_app/components/elevated_button_component.dart';
 import 'package:lavvi_app/controllers/register_controller.dart';
 import 'package:validatorless/validatorless.dart';
+import 'package:flutter_masked_text2/flutter_masked_text2.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -18,11 +19,12 @@ class RegisterPage extends StatefulWidget {
 class _RegisterPageState extends State<RegisterPage> {
   final _formKey = GlobalKey<FormState>();
   final nameController = TextEditingController();
-  final cpfController = TextEditingController();
+  final cpfController = MaskedTextController(mask: '000.000.000-00');
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
 
   bool? isChecked = false;
+  bool isObscureText = true;
 
   @override
   void dispose() {
@@ -154,16 +156,28 @@ class _RegisterPageState extends State<RegisterPage> {
                     const SizedBox(height: 16),
                     TextFormField(
                       controller: passwordController,
-                      decoration: const InputDecoration(
-                        label: Text(
+                      decoration: InputDecoration(
+                        label: const Text(
                           'senha',
                           style: TextStyle(fontSize: 16),
+                        ),
+                        suffixIcon: IconButton(
+                          onPressed: () {
+                            setState(() {
+                              isObscureText = !isObscureText;
+                            });
+                          },
+                          icon: Icon(
+                           isObscureText ? Icons.visibility_off : Icons.visibility,
+                            size: 19,
+                          ),
                         ),
                       ),
                       validator: Validatorless.multiple([
                         Validatorless.min(4, 'O mínimo de caracteres é 4'),
                         Validatorless.required('Senha Obrigatória'),
                       ]),
+                      obscureText: isObscureText,
                     ),
                     const SizedBox(height: 12),
                     const SizedBox(

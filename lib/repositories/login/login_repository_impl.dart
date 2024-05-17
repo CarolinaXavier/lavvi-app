@@ -1,67 +1,79 @@
-import 'package:dio/dio.dart';
+import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:lavvi_app/core/rest_client/custom_dio.dart';
+import 'package:lavvi_app/core/rest_client/custom_http.dart';
 import 'package:lavvi_app/core/storage/storage.dart';
 import 'package:lavvi_app/pages/home_page.dart';
 import 'package:lavvi_app/repositories/login/login_repository.dart';
 
 class LoginRepositoryImpl implements LoginRepository {
-  final CustomDio _dio;
-  LoginRepositoryImpl(this._dio) {
-    _dio.interceptors.add(InterceptorsWrapper(
-      onRequest: (options, handler) async {
-        final token = await Storage.getToken();
-        if (token != null && token.isNotEmpty) {
-          options.headers['Authorization'] = 'Bearer $token';
-        }
-        options.headers['Content-Type'] = 'application/json';
-        return handler.next(options);
-      },
-    ));
-  }
+  final CustomHttp _http;
+  LoginRepositoryImpl(this._http);
 
   @override
-  Future login(String email, String password,  BuildContext context) async {
+  Future login(String email, String password, BuildContext context) async {
     print('Passou por aqui $email $password');
     try {
       print('Entrou no TRY');
-      final result = await _dio.post('user/login', data: {
-        "email": email,
-        "password": password,
-      });
-      print('LOGIN: ${result.data}');
-      await _saveToken(result.data);
-     Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => HomePage(),), (route) => false);
-    } on DioException catch (e) {
-      print('LOGIN ERROR: $e');
-      if (e.response?.statusCode == 401) {
+
+      // Configuração da requisição
+      final response = await _http.post(
+        'user/login',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode({
+          "email": email,
+          "password": password,
+        }),
+      );
+
+      // Verificação da resposta
+      if (response.statusCode == 200) {
+        final result = jsonDecode(response.body);
+        print('LOGIN: $result');
+        await _saveToken(result);
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(builder: (context) => const HomePage()),
+          (route) => false,
+        );
+      } else if (response.statusCode == 401) {
+        print('LOGIN ERROR: Unauthorized');
         Storage.clear();
+        throw UnimplementedError('401');
+      } else {
+        print('LOGIN ERROR: ${response.statusCode}');
+        throw UnimplementedError(response.statusCode.toString());
       }
-      throw UnimplementedError(e.response?.statusCode.toString());
+    } catch (e) {
+      print('LOGIN ERROR: $e');
+      throw UnimplementedError(e.toString());
     }
   }
 
   @override
-  Future register(
-      String name, String cpf, String email, String password) async {
-    print('REGISTER: $name $cpf $email $password');
+  Future register(String name, String cpf, String email, String password) async {
     try {
-      await _dio.post(
+      final response = await _http.post(
         'user/register',
-        data: {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode({
           "name": name,
           "cpf": cpf,
           "email": email,
           "password": password,
-        },
-      ).then((value) {
-        print('REGISTER USER: ${value.data}');
-        return value;
-      });
-    } on DioException catch (e) {
-      print('Error Repository: ${e.message}');
-      throw UnimplementedError(e.response?.statusCode.toString());
+        }),
+      );
+
+ 
+        final result = jsonDecode(response.body);
+        print('REGISTER USER: $result');
+        return result;
+    } catch (e) {
+      print('Error Repository: $e');
+      throw UnimplementedError(e.toString());
     }
   }
 
